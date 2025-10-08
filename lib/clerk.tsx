@@ -46,3 +46,22 @@ export const UserButton = (props: any) => {
   const Real = UserButton ?? (() => null);
   return <Real {...props} />;
 };
+
+// Server helpers
+export const auth = () => {
+  if (!isClerkConfigured) {
+    return {
+      userId: null,
+      sessionId: null,
+      getToken: async () => null as string | null,
+    };
+  }
+  const { auth } = loadClerk();
+  return auth();
+};
+
+export const currentUser = async () => {
+  if (!isClerkConfigured) return null;
+  const { currentUser } = loadClerk();
+  return currentUser ? await currentUser() : null;
+};

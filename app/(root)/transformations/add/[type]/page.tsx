@@ -2,7 +2,7 @@ import Header from '@/components/shared/Header'
 import TransformationForm from '@/components/shared/TransformationForm';
 import { transformationTypes } from '@/constants'
 import { getUserById, createUser } from '@/lib/actions/user.actions';
-import { auth, currentUser } from '@clerk/nextjs';
+import { auth, currentUser } from '@/lib/clerk';
 import { redirect } from 'next/navigation';
 
 const AddTransformationTypePage = async ({ params: { type } }: SearchParamProps) => {

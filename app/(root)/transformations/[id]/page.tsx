@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@/lib/clerk";
 import Image from "next/image";
 import Link from "next/link";
 
