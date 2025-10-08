@@ -99,6 +99,18 @@ export async function getAllImages({ limit = 9, page = 1, searchQuery = '' }: {
   searchQuery?: string;
 }) {
   try {
+    const hasMongo = Boolean(process.env.MONGODB_URL);
+    const hasCloudinary = Boolean(
+      process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+    );
+
+    // If env is not configured yet (first-time deploy), return an empty, safe payload
+    if (!hasMongo || !hasCloudinary) {
+      return { data: [], totalPage: 0, savedImages: 0 };
+    }
+
     await connectToDatabase();
 
     cloudinary.config({
@@ -161,6 +173,10 @@ export async function getUserImages({
   userId: string;
 }) {
   try {
+    if (!process.env.MONGODB_URL) {
+      return { data: [], totalPages: 0 };
+    }
+
     await connectToDatabase();
 
     const skipAmount = (Number(page) - 1) * limit;
