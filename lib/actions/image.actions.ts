@@ -158,7 +158,8 @@ export async function getAllImages({ limit = 9, page = 1, searchQuery = '' }: {
       savedImages,
     }
   } catch (error) {
-    handleError(error)
+    console.error('getAllImages error:', error);
+    return { data: [], totalPage: 0, savedImages: 0 };
   }
 }
 
@@ -193,6 +194,7 @@ export async function getUserImages({
       totalPages: Math.ceil(totalImages / limit),
     };
   } catch (error) {
-    handleError(error);
+    console.error('getUserImages error:', error);
+    return { data: [], totalPages: 0 };
   }
 }
