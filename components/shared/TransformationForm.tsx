@@ -150,16 +150,22 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
   }
 
   const onInputChangeHandler = (fieldName: string, value: string, type: string, onChangeField: (value: string) => void) => {
+    // Ensure we always start from a valid base object to avoid spreading null/undefined
     debounce(() => {
-      setNewTransformation((prevState: any) => ({
-        ...prevState,
-        [type]: {
-          ...prevState?.[type],
-          [fieldName === 'prompt' ? 'prompt' : 'to' ]: value 
-        }
-      }))
+      setNewTransformation((prevState: any) => {
+        const base: any = prevState ?? transformationType.config ?? {};
+        const section: any = base?.[type] ?? {};
+
+        return {
+          ...base,
+          [type]: {
+            ...section,
+            [fieldName === 'prompt' ? 'prompt' : 'to']: value,
+          },
+        } as Transformations;
+      });
     }, 1000)();
-      
+
     return onChangeField(value)
   }
 
@@ -178,10 +184,17 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
   }
 
   useEffect(() => {
-    if(image && (type === 'restore' || type === 'removeBackground')) {
+    // Initialize a sensible default configuration when an image is present for
+    // single-click transforms, and also ensure forms like 'remove'/'recolor'
+    // have a base object to update as the user types.
+    if (image && (type === 'restore' || type === 'removeBackground')) {
       setNewTransformation(transformationType.config)
     }
-  }, [image, transformationType.config, type])
+
+    if (!newTransformation && (type === 'remove' || type === 'recolor' || type === 'fill')) {
+      setNewTransformation(transformationType.config)
+    }
+  }, [image, newTransformation, transformationType.config, type])
 
   return (
     <Form {...form}>

@@ -45,7 +45,8 @@ const Checkout = ({
         className: "error-toast",
       });
     }
-  }, []);
+    // 'toast' is stable, but include it to satisfy exhaustive-deps rule
+  }, [toast]);
 
   const onCheckout = async () => {
     const transaction = {
